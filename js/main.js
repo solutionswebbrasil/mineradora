@@ -294,6 +294,41 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     animateOnScroll();
+
+    // Animação dos números estatísticos
+    function animateNumbers() {
+        const stats = document.querySelectorAll('.stat-item h3');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const target = entry.target;
+                    const targetNumber = parseInt(target.textContent);
+                    let count = 0;
+                    const duration = 2000; // 2 segundos
+                    const increment = targetNumber / (duration / 16); // 60fps
+
+                    function updateCount() {
+                        count += increment;
+                        if (count < targetNumber) {
+                            target.textContent = Math.round(count);
+                            requestAnimationFrame(updateCount);
+                        } else {
+                            target.textContent = targetNumber;
+                        }
+                    }
+
+                    updateCount();
+                    observer.unobserve(target);
+                }
+            });
+        }, {
+            threshold: 0.5
+        });
+
+        stats.forEach(stat => observer.observe(stat));
+    }
+
+    animateNumbers();
 });
 
 // Add CSS class for animations and mobile menu
